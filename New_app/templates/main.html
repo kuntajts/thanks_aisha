@@ -1,7 +1,96 @@
+{% extends "base.html" %}
 
-<html>
-  <head>  </head>
-  <body>
-    hiiii
-  </body>
-</html>
+{% block title %}A bolder title{% end %}
+
+{% block body %}
+<!-- Wide card with share menu button -->
+
+
+<style>
+  .demo-card-wide.mdl-card {
+    width: 512px;
+    top: 150px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .demo-card-wide > .mdl-card__title {
+    color: #000;
+    height: 176px;
+    background: url('./static/images/birds_diverse.jpg') center / cover;
+  }
+  .demo-card-wide > .mdl-card__menu {
+    color: #fff;
+  }
+
+  .demo-card-square.mdl-card {
+    width: 320px;
+    height: 250px;
+    top: 190px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .demo-card-square > .mdl-card__title {
+    color: #fff;
+    background:
+      url('../assets/demos/dog.png') bottom right 15% no-repeat #46B6AC;
+  }
+  .hide{
+    display: none;
+  }
+</style>
+
+<div id="welcomecard" class="mdl-card mdl-shadow--2dp demo-card-wide">
+  <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text" style="font-size:28px;">Welcome</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    Find out how much of your Github project came from people of diverse backgrounds in
+    a couple easy steps.
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <a id="showProjectform" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+      Get Started
+    </a>
+  </div>
+  <div class="mdl-card__menu">
+    <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+      <i class="material-icons">share</i>
+    </button>
+  </div>
+</div>
+
+
+
+<div id="projectsubmit" class="mdl-card mdl-shadow--2dp demo-card-square hide">
+  <div class="mdl-card__title mdl-card--expand">
+    <h2 class="mdl-card__title-text">Project</h2>
+  </div>
+  <div class="mdl-card__supporting-text">
+    Please enter your github project URL
+    <!-- Simple Textfield -->
+<form id="projectform" action="/submitproject" method="get" >
+  <div class="mdl-textfield mdl-js-textfield textfield-demo">
+    <input class="mdl-textfield__input" type="text" id="sample1" />
+    <label class="mdl-textfield__label" for="sample1">Github URL...</label>
+  </div>
+</form>
+  </div>
+  <div class="mdl-card__actions mdl-card--border">
+    <a id="submitform" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+      Analyze
+    </a>
+  </div>
+</div>
+
+<script>
+$("#showProjectform").on("click", function(){
+  $("#projectsubmit").fadeIn()
+})
+
+$("#submitform").on("click", function(){
+  $("#projectform").submit()
+})
+
+</script>
+{% end %}
+
