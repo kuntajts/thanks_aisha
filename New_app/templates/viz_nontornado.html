@@ -396,10 +396,14 @@ var svgStem = d3.select("#steamograph").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var graph = d3.csv(csvpath, function(data) {
+
+
   data.forEach(function(d) {
     d.date = format.parse(d.date);
     d.value = +d.value;
+    console.log(data)
   });
+  console.log(graph)
 
   var layers = stack(nest.entries(data));
 
