@@ -12,12 +12,13 @@ loader = tornado.template.Loader("./templates")
 
 
 class ProjectExtractor(tornado.web.RequestHandler):
-    def get(self):
-        githubUrl =  self.get_argument("github-url", None, True)
-        if not github:
-          self.write("No url submitted")
-        Contributors = github.Github().returnContributors(githubUrl)
-        self.write("ffdf")
+  def get(self):
+    githubUrl =  self.get_argument("github-url", None, True)
+    if not github:
+      self.write("No url submitted")
+    Contributors = github.Github().returnContributors(githubUrl)
+    self.write(loader.load("contributors_list.html").generate(Contributors=Contributors))
+
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
