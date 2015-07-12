@@ -47,3 +47,13 @@ class Github:
 
     url = self.buildurl(url)
     contributors = self.getJson(url)
+
+    result = []
+    for i in contributors:
+      newDict = dict()
+      newDict["username"] = i["login"]
+      newDict["image_url"] = i["avatar_url"]
+      newDict["contributions"] = i["contributions"]
+      result.append(newDict)
+
+    return result
