@@ -46,9 +46,7 @@
     <input type="radio" name="race" value="NHOPI">Native Hawaiian or Other Pacific Islander:<br>
     <input type="radio" name="race" value="WHI">White <br>
     <input type="radio" name="race" value="ASIN">Asian <br>
-    Ethnicity<br>
-    <input type="radio" name="ethnicity" value="HL">Hispanic or Latino<br>
-    <input type="radio" name="ethnicity" value="NHL">Not Hispanic of Latino<br>
+    <input type="radio" name="race" value="HL">Hispanic or Latino<br>
     </form>
   </div>
 </div>
@@ -73,8 +71,7 @@ function CollectInformation() {
   $(".Backgroundform").each(function(d){
     that = this
      var user = { "username": this.getAttribute("data-name"),
-                  "race": null,
-                  "ethnicity": null }
+                  "race": null}
      for (var i=0; i<that.childNodes.length; i++)  {
        if (that.childNodes[i].type == "radio" && that.childNodes[i].checked)  {
         user[that.childNodes[i].name] = that.childNodes[i].value
@@ -84,10 +81,7 @@ function CollectInformation() {
         alert("Please select " + user["username"]+"'s race" )
         return false
       }
-      else if ( !user["ethnicity"] ){
-        alert("Please select " + user["username"]+"'s ethnicity" )
-        return false
-      }
+
       Users.push(user)
   })
 

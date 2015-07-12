@@ -97,14 +97,12 @@ class Github:
     for contributor in contributor_stats:
 
       race = self.UsertoRace[contributor["author"]["login"]]
-      ethnicity = self.UsertoEthnicity[contributor["author"]["login"]]
       for week in contributor["weeks"]:
         if week["w"] not in ReturnStats:
           ReturnDates.append(week["w"])
           ReturnStats[week["w"]] = {
                                     "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "NHOPI" :{ "a": 0, "d": 0, "c":0, "ac":0},
                                     "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
@@ -113,10 +111,6 @@ class Github:
         ReturnStats[week["w"]][race]["d"] += week["d"]
         ReturnStats[week["w"]][race]["c"] += week["c"]
         ReturnStats[week["w"]][race]["ac"] += 1
-        ReturnStats[week["w"]][ethnicity]["a"] += week["a"]
-        ReturnStats[week["w"]][ethnicity]["d"] += week["d"]
-        ReturnStats[week["w"]][ethnicity]["c"] += week["c"]
-        ReturnStats[week["w"]][ethnicity]["ac"] += 1
     return ReturnStats, ReturnDates
 
 
@@ -168,8 +162,6 @@ class Github:
     for i in userInfo:
       userName = i["username"]
       self.UsertoRace[userName] = i["race"]
-      self.UsertoEthnicity[userName] = i["ethnicity"]
-
 
   def initializeRacesDict(self):
     for race in self.races:
