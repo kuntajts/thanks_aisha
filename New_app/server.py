@@ -22,7 +22,8 @@ class ProjectExtractor(tornado.web.RequestHandler):
 class DiversityInformation(tornado.web.RequestHandler):
   def post(self):
     #data_json = tornado.escape.json_decode(self.request.body)
-    print self.request.body
+    print self.get_argument("project")
+    print self.get_argument("users")
     self.write("hi")
 
 class MainHandler(tornado.web.RequestHandler):
