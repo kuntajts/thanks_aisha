@@ -16,6 +16,10 @@
 Alldata = JSON.parse('{% raw AlldataJson %}')
 Alldates = JSON.parse('{% raw AlldatesJson %}')
 MasterKeys = d3.keys(Alldata[Alldates[0]])
+ShortCodetoLongName = {"AIAN": "American Indian or Alaska Native", "BAA":"Black or African American",
+"NHOPI":"Native Hawaiian or Other Pacific Islander", "WHI": "White", "ASIN": "Asian", "HL":"Hispanic or Latino"}
+
+
 
 </script>
 <style>
@@ -130,7 +134,7 @@ body {
   float:right;
 }
 #steamograph{
-  width:95%;
+  width:92%;
   margin: 1%;
 }
 .titleofgraph{
@@ -220,7 +224,9 @@ $(window).load( function() {
 
   svg.append("g")
       .attr("class", "y axis")
+      // .attr("transform", "translate(0," + height + ")")
       .call(yAxis)
+
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
@@ -236,6 +242,7 @@ $(window).load( function() {
   city.append("path")
       .attr("class", "line")
       .attr("d", function(d) {return line(d.values); })
+       .attr("transform", "translate(0," + -margin.bottom + ")")
       .style("stroke", function(d) { return color(d.name); });
 
   city.append("text")
@@ -353,7 +360,7 @@ function type(d) {
 
 <script>
 
-chart("orange");
+chart("blue");
 
 var datearray = [];
 var colorrange = [];
@@ -375,8 +382,8 @@ strokecolor = colorrange[0];
 var format = d3.time.format("%m/%d/%y");
 
 var margin = {top: 20, right: 40, bottom: 30, left: 30};
-var width = document.body.clientWidth - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
+var width = document.body.clientWidth -30 - margin.left - margin.right;
+var height = 520 - margin.top - margin.bottom;
 
 var tooltip = d3.select("body")
     .append("div")
@@ -501,7 +508,7 @@ var graph = $(window).load( function() {
       .classed("hover", true)
       .attr("stroke", strokecolor)
       .attr("stroke-width", "0.5px"),
-      $("#dynamicinformation").html( d.key + "<br>" + pro).style("visibility", "visible");
+      $("#dynamicinformation").html( ShortCodetoLongName[d.key])//.style("visibility", "visible");
 
     })
     .on("mouseout", function(d, i) {
@@ -511,7 +518,7 @@ var graph = $(window).load( function() {
       .attr("opacity", "1");
       d3.select(this)
       .classed("hover", false)
-      .attr("stroke-width", "0px"), $("#dynamicinformation").html( d.key + "<br>" + pro).style("visibility", "hidden");
+      .attr("stroke-width", "0px"), $("#dynamicinformation").html(ShortCodetoLongName[d.key])//.style("visibility", "hidden");
   })
 
   var vertical = d3.select("#steamograph")
