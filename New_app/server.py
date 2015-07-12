@@ -3,6 +3,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 import github
+import json
 
 settings = {
     "static_path": os.path.join(os.path.dirname(__file__), "static"),
@@ -27,7 +28,8 @@ class DiversityInformation(tornado.web.RequestHandler):
     print self.get_argument("users")
     g = github.Github()
     g.combineRaces(self.get_argument("users"))
-    self.write("hi")
+    Alldata, Alldates = g.StatsFromContributors(self.get_argument("project"))
+    self.write(loader.load("viz.html").generate(AlldataJson=json.dumps(Alldata), AlldatesJson=json.dumps(Alldates)))
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
