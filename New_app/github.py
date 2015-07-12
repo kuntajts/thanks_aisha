@@ -1,5 +1,7 @@
 import requests
 import json
+import time
+from datetime import datetime, time, date, timedelta
 
 class Github:
   GITHUB_API = "https://api.github.com/"
@@ -12,7 +14,10 @@ class Github:
     return self.getJson(url)
 
   def buildurl(self, halfurl):
-    return self.GITHUB_API + halfurl + "?client_id=" + self.client_id + "&client_secret=" + self.client_secret
+    return self.GITHUB_API + halfurl \
+                  + "?client_id=" + self.client_id \
+                  + "&client_secret=" + self.client_secret \
+                  + "&per_page=100"
 
   def getJson(self, url):
     r = requests.get(url)
@@ -54,6 +59,33 @@ class Github:
       newDict["username"] = i["login"]
       newDict["image_url"] = i["avatar_url"]
       newDict["contributions"] = i["contributions"]
+      newDict["profile_url"] = i["html_url"]
       result.append(newDict)
 
     return result
+
+  def getAllCommitsInTheLastMonth(self, url):
+    repoName = url.split('/')[4]
+    userName = url.split('/')[3]
+
+    dataSince = datetime.now() - timedelta(30) #30 days in a month... only get a month of data
+
+    url = "repos/" + userName + "/" + repoName + "/commits"
+
+    url = self.buildurl(url) + "&rel=last" + "&since=" + dataSince.isoformat()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
