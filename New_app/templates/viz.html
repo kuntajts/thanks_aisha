@@ -201,7 +201,6 @@ $(window).load( function() {
         if (Alldata.hasOwnProperty(key)) {
           // console.log(parseDate(key))
           // console.log(Alldata[key])
-          console.log()
           prevalues.push({date: new Date(key*1000), temperature: parseInt(Alldata[key][name]["ac"])})
         }
     }
@@ -233,7 +232,6 @@ $(window).load( function() {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Active Contributors");
-      console.log(cities)
   var city = svg.selectAll(".city")
       .data(cities)
     .enter().append("g")
@@ -500,8 +498,6 @@ var graph = $(window).load( function() {
       }
 
       mousedate = datearray.indexOf(invertedx);
-      console.log(mousedate)
-      console.log(d.values[mousedate])
       pro = d.values[mousedate].value;
 
       d3.select(this)
