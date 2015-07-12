@@ -13,10 +13,9 @@ class Github:
   races = {
       "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
       "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
-      "NHOPI" :{ "a": 0, "d": 0, "c":0, "ac":0},
       "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
       "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
-      "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "NHOPI" : { "a": 0, "d": 0, "c":0, "ac":0},
       "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0},
   }
 
@@ -105,7 +104,7 @@ class Github:
                                     "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "NHOPI" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0} }
         ReturnStats[week["w"]][race]["a"] += week["a"]
         ReturnStats[week["w"]][race]["d"] += week["d"]
