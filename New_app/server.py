@@ -17,8 +17,13 @@ class ProjectExtractor(tornado.web.RequestHandler):
     if not github:
       self.write("No url submitted")
     Contributors = github.Github().returnContributors(githubUrl)
-    self.write(loader.load("contributors_list.html").generate(Contributors=Contributors))
+    self.write(loader.load("contributors_list.html").generate(Contributors=Contributors, project=githubUrl))
 
+class DiversityInformation(tornado.web.RequestHandler):
+  def post(self):
+    #data_json = tornado.escape.json_decode(self.request.body)
+    print self.request.body
+    self.write("hi")
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -26,7 +31,8 @@ class MainHandler(tornado.web.RequestHandler):
 
 application = tornado.web.Application([
     (r"/", MainHandler),
-    (r"/submitproject", ProjectExtractor)
+    (r"/submitproject", ProjectExtractor),
+    (r"/diversityinfo", DiversityInformation)
 ],**settings )
 
 if __name__ == "__main__":

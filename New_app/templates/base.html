@@ -32,11 +32,14 @@
       <a class="mdl-navigation__link" href="">Link</a>
       <a class="mdl-navigation__link" href="">Link</a>
     </nav>
-  </div>
+  </div> <main class="mdl-layout__content">
+    <div class="page-content">{% block body %}
+
+{% end %}</div>
+  </main>
+</div>
 
 </div>
-{% block body %}
 
-{% end %}
   </body>
 </html>
