@@ -1,12 +1,25 @@
 import requests
 import json
 import time
-from datetime import datetime, time, date, timedelta
+from datetime import datetime, timedelta
 
 class Github:
   GITHUB_API = "https://api.github.com/"
   client_secret="7639703bd5d8ebca9bbe581ae8909b4cbbc47df0"
   client_id="51560070d2187487a8d1"
+
+
+
+  races = {
+      "AIAN" : {},
+      "BAA" : {},
+      "NHOPI" : {},
+      "WHI" : {},
+      "HL" : {},
+      "NHL" : {}
+  }
+
+  userDict = None
 
   def user(self, userName):
     url = "users/" + userName
@@ -19,11 +32,19 @@ class Github:
                   + "&client_secret=" + self.client_secret \
                   + "&per_page=100"
 
+  def buildCommiturl(self, halfurl):
+    return halfurl \
+          + "?client_id=" + self.client_id \
+          + "&client_secret=" + self.client_secret \
+          + "&per_page=100"
+
   def getJson(self, url):
     r = requests.get(url)
     if(r.ok):
       repoItem = json.loads(r.text or r.content)
+      r.headers["X-RateLimit-Remaining"]
       return repoItem
+    r.headers["X-RateLimit-Remaining"]
 
   def getRepoFromURL(self, url):
     repoName = url.split('/')[4]
@@ -70,11 +91,53 @@ class Github:
 
     dataSince = datetime.now() - timedelta(30) #30 days in a month... only get a month of data
 
-    url = "repos/" + userName + "/" + repoName + "/commits"
+    pageNum = 1
 
-    url = self.buildurl(url) + "&rel=last" + "&since=" + dataSince.isoformat()
+    isMorePages = True
 
+    self.initializeRacesDict();
+    while(isMorePages):
+      url = "repos/" + userName + "/" + repoName + "/commits"
 
+      url = self.buildurl(url) + "&since=" + dataSince.isoformat() + "&page=" + str(pageNum)
+
+      r = requests.get(url)
+      if(r.ok):
+        repoItem = json.loads(r.text or r.content)
+        headers = ""
+        if "link" in r.headers.keys():
+          headers = r.headers["link"]
+        if 'rel="next"' not in headers.split(' '):
+          isMorePages = False
+        if repoItem == None:
+          print "WTF"
+        self.parseCommits(repoItem)
+        pageNum += 1
+
+  def parseCommits(self, pageOfCommits):
+    for commit in pageOfCommits:
+      url = self.buildCommiturl(commit["url"])
+      jsonResponse = self.getJson(url)
+      time.sleep(.001)
+
+      print str(jsonResponse["stats"])
+      userInfo = self.userDict[jsonResponse["author"]]
+      self.races[userInfo["race"]] += int(jsonResponse["stats"]["additions"])
+      self.races[userInfo["ethnicity"]] += int(jsonResponse["stats"]["deletions"])
+
+  def combineRaces(self, userInfo):
+    userInfo = json.loads(userInfo)
+    self.userDict = dict()
+    for i in userInfo:
+      userName = i["username"]
+      self.userDict[userName] = dict()
+      del i["username"]
+      self.userDict[userName] = i
+
+  def initializeRacesDict(self):
+    for race in self.races:
+      race["ADD"] = 0
+      race["DEL"] = 0
 
 
 

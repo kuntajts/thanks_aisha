@@ -19,11 +19,14 @@ class ProjectExtractor(tornado.web.RequestHandler):
     Contributors = github.Github().returnContributors(githubUrl)
     self.write(loader.load("contributors_list.html").generate(Contributors=Contributors, project=githubUrl))
 
+
 class DiversityInformation(tornado.web.RequestHandler):
   def post(self):
     #data_json = tornado.escape.json_decode(self.request.body)
     print self.get_argument("project")
     print self.get_argument("users")
+    g = github.Github()
+    g.combineRaces(self.get_argument("users"))
     self.write("hi")
 
 class MainHandler(tornado.web.RequestHandler):
