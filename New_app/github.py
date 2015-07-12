@@ -17,6 +17,7 @@ class Github:
       "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
       "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
       "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0},
   }
 
   userDict = None
@@ -106,7 +107,8 @@ class Github:
                                     "NHOPI" :{ "a": 0, "d": 0, "c":0, "ac":0},
                                     "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
                                     "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "NHL" : { "a": 0, "d": 0, "c":0, "ac":0} }
+                                    "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0} }
         ReturnStats[week["w"]][race]["a"] += week["a"]
         ReturnStats[week["w"]][race]["d"] += week["d"]
         ReturnStats[week["w"]][race]["c"] += week["c"]
