@@ -95,22 +95,25 @@ class Github:
     ReturnDates = []
     for contributor in contributor_stats:
 
-      race = self.UsertoRace[contributor["author"]["login"]]
-      for week in contributor["weeks"]:
-        if week["w"] not in ReturnStats:
-          ReturnDates.append(week["w"])
-          ReturnStats[week["w"]] = {
-                                    "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "NHOPI" : { "a": 0, "d": 0, "c":0, "ac":0},
-                                    "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0} }
-        ReturnStats[week["w"]][race]["a"] += week["a"]
-        ReturnStats[week["w"]][race]["d"] += week["d"]
-        ReturnStats[week["w"]][race]["c"] += week["c"]
-        if week["c"] != 0:
-          ReturnStats[week["w"]][race]["ac"] += 1
+      try:
+        race = self.UsertoRace[contributor["author"]["login"]]
+        for week in contributor["weeks"]:
+          if week["w"] not in ReturnStats:
+            ReturnDates.append(week["w"])
+            ReturnStats[week["w"]] = {
+                                      "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                      "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                      "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                      "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                      "NHOPI" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                      "ASIN" : { "a": 0, "d": 0, "c":0, "ac":0} }
+          ReturnStats[week["w"]][race]["a"] += week["a"]
+          ReturnStats[week["w"]][race]["d"] += week["d"]
+          ReturnStats[week["w"]][race]["c"] += week["c"]
+          if week["c"] != 0:
+            ReturnStats[week["w"]][race]["ac"] += 1
+      except Exception as e:
+        continue
 
     return ReturnStats, ReturnDates
 
