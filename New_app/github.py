@@ -110,7 +110,9 @@ class Github:
         ReturnStats[week["w"]][race]["a"] += week["a"]
         ReturnStats[week["w"]][race]["d"] += week["d"]
         ReturnStats[week["w"]][race]["c"] += week["c"]
-        ReturnStats[week["w"]][race]["ac"] += 1
+        if week["c"] != 0:
+          ReturnStats[week["w"]][race]["ac"] += 1
+
     return ReturnStats, ReturnDates
 
 
