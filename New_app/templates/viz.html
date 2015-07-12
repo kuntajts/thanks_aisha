@@ -14,7 +14,8 @@
 <script>
 
 Alldata = JSON.parse('{% raw AlldataJson %}')
-AllDates = JSON.parse('{% raw AlldatesJson %}')
+Alldates = JSON.parse('{% raw AlldatesJson %}')
+MasterKeys = d3.keys(Alldata[Alldates[0]])
 
 </script>
 <style>
@@ -178,25 +179,31 @@ var svg = d3.select("#multilinegraph").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("data2.csv", function(error, data) {
-  if (error) throw error;
-console.log(data)
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+$(window).load( function() {
 
-  data.forEach(function(d) {
-    d.date = parseDate(d.date);
+  // var data = {}
+  color.domain(d3.keys(Alldata[Alldates[0]]).filter(function(key) { return key !== "date"; }));
 
-  });
+  // data.forEach(function(d) {
+  //   d.date = parseDate(d.date);
+
+  // });
 
   var cities = color.domain().map(function(name) {
+    prevalues = []
+    for (var key in Alldata) {
+        if (Alldata.hasOwnProperty(key)) {
+          // console.log(parseDate(key))
+          // console.log(Alldata[key])
+          prevalues.push({date: new Date(key*1000), temperature: parseInt(Alldata[key][name]["ac"])})
+        }
+    }
     return {
       name: name,
-      values: data.map(function(d) {
-        return {date: d.date, temperature: parseInt(d[name])};
-      })
+      values: prevalues
     };
   });
-  x.domain(d3.extent(data, function(d) { return d.date; }));
+  x.domain(d3.extent(Alldates, function(d) { return new Date(d*1000); }));
 
   y.domain([
     d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
@@ -217,7 +224,7 @@ console.log(data)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Temperature (ºF)");
-
+      console.log(cities)
   var city = svg.selectAll(".city")
       .data(cities)
     .enter().append("g")
@@ -278,7 +285,31 @@ var svgBar = d3.select("#bargraph").append("svg")
 
 svgBar.call(tip);
 
-d3.csv("data.csv", type, function(error, data) {
+$(window).load( function() {
+
+
+  d3.keys(Alldata[Alldates[0]])
+    // Last
+  var dataObj = {}
+  var total = 0;
+  for(var i = 1; i < 5; i ++){
+    for (var key in  Alldata[Alldates[Alldates.length - i]]) {
+        if (Alldata[Alldates[Alldates.length - i]].hasOwnProperty(key)) {
+          if (!(key in dataObj)){
+            dataObj[key] = 0
+          }
+
+          dataObj[key] += parseInt(Alldata[Alldates[Alldates.length - i]][key]["ac"])
+          total += parseInt(Alldata[Alldates[Alldates.length - i]][key]["ac"])
+        }
+      }
+  }
+var data = []
+for (var key in  dataObj) {
+  if (dataObj.hasOwnProperty(key)) {
+    data.push({"letter": key, "frequency": dataObj[key]})
+  }
+}
   xbar.domain(data.map(function(d) { return d.letter; }));
   ybar.domain([0, d3.max(data, function(d) { return d.frequency; })]);
 
@@ -317,179 +348,5 @@ function type(d) {
 
 </script>
 
-<script>
-
-chart("dataStem.csv", "orange");
-
-var datearray = [];
-var colorrange = [];
-
-
-function chart(csvpath, color) {
-
-if (color == "blue") {
-  colorrange = ["#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6"];
-}
-else if (color == "pink") {
-  colorrange = ["#980043", "#DD1C77", "#DF65B0", "#C994C7", "#D4B9DA", "#F1EEF6"];
-}
-else if (color == "orange") {
-  colorrange = ["#B30000", "#E34A33", "#FC8D59", "#FDBB84", "#FDD49E", "#FEF0D9"];
-}
-strokecolor = colorrange[0];
-
-var format = d3.time.format("%m/%d/%y");
-
-var margin = {top: 20, right: 40, bottom: 30, left: 30};
-var width = document.body.clientWidth - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
-
-var tooltip = d3.select("body")
-    .append("div")
-    .attr("class", "remove")
-    .style("position", "absolute")
-    .style("z-index", "20")
-    .style("visibility", "hidden")
-    .style("top", "30px")
-    .style("left", "55px");
-
-var xStem = d3.time.scale()
-    .range([0, width]);
-
-var yStem = d3.scale.linear()
-    .range([height-10, 0]);
-
-var z = d3.scale.ordinal()
-    .range(colorrange);
-
-var xAxisStem = d3.svg.axis()
-    .scale(xStem)
-    .orient("bottom")
-    .ticks(d3.time.weeks);
-
-var yAxisStem = d3.svg.axis()
-    .scale(yStem);
-
-var yAxisr = d3.svg.axis()
-    .scale(yStem);
-
-var stack = d3.layout.stack()
-    .offset("silhouette")
-    .values(function(d) { return d.values; })
-    .x(function(d) { return d.date; })
-    .y(function(d) { return d.value; });
-
-var nest = d3.nest()
-    .key(function(d) { return d.key; });
-
-var area = d3.svg.area()
-    .interpolate("cardinal")
-    .x(function(d) { return xStem(d.date); })
-    .y0(function(d) { return yStem(d.y0); })
-    .y1(function(d) { return yStem(d.y0 + d.y); });
-
-var svgStem = d3.select("#steamograph").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var graph = d3.csv(csvpath, function(data) {
-  data.forEach(function(d) {
-    d.date = format.parse(d.date);
-    d.value = +d.value;
-  });
-
-  var layers = stack(nest.entries(data));
-
-  xStem.domain(d3.extent(data, function(d) { return d.date; }));
-  yStem.domain([0, d3.max(data, function(d) { return d.y0 + d.y; })]);
-
-  svgStem.selectAll(".layer")
-      .data(layers)
-    .enter().append("path")
-      .attr("class", "layer")
-      .attr("d", function(d) { return area(d.values); })
-      .style("fill", function(d, i) { return z(i); });
-
-
-  svgStem.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxisStem);
-
-  svgStem.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(" + width + ", 0)")
-      .call(yAxisStem.orient("right"));
-
-  svgStem.append("g")
-      .attr("class", "y axis")
-      .call(yAxisStem.orient("left"));
-
-  svgStem.selectAll(".layer")
-    .attr("opacity", 1)
-    .on("mouseover", function(d, i) {
-      svgStem.selectAll(".layer").transition()
-      .duration(250)
-      .attr("opacity", function(d, j) {
-        return j != i ? 0.6 : 1;
-    })})
-
-    .on("mousemove", function(d, i) {
-      mousex = d3.mouse(this);
-      mousex = mousex[0];
-      var invertedx = xStem.invert(mousex);
-      invertedx = invertedx.getMonth() + invertedx.getDate();
-      var selected = (d.values);
-      for (var k = 0; k < selected.length; k++) {
-        datearray[k] = selected[k].date
-        datearray[k] = datearray[k].getMonth() + datearray[k].getDate();
-      }
-
-      mousedate = datearray.indexOf(invertedx);
-      pro = d.values[mousedate].value;
-
-      d3.select(this)
-      .classed("hover", true)
-      .attr("stroke", strokecolor)
-      .attr("stroke-width", "0.5px"),
-      tooltip.html( "<div class='steamographtooltip'><p>" + d.key + "<br>" + pro + "</p></div>" ).style("visibility", "visible");
-
-    })
-    .on("mouseout", function(d, i) {
-     svgStem.selectAll(".layer")
-      .transition()
-      .duration(250)
-      .attr("opacity", "1");
-      d3.select(this)
-      .classed("hover", false)
-      .attr("stroke-width", "0px"), tooltip.html( "<div class='steamographtooltip'><p>" + d.key + "<br>" + pro + "</p></div>" ).style("visibility", "hidden");
-  })
-
-  var vertical = d3.select("#steamograph")
-        .append("div")
-        .attr("class", "remove")
-        .style("position", "absolute")
-        .style("z-index", "19")
-        .style("width", "1px")
-        .style("height", "380px")
-        .style("top", "10px")
-        .style("bottom", "30px")
-        .style("left", "0px")
-        .style("background", "#fff");
-
-  d3.select("#steamograph")
-      .on("mousemove", function(){
-         mousex = d3.mouse(this);
-         mousex = mousex[0] + 5;
-         vertical.style("left", mousex + "px" )})
-      .on("mouseover", function(){
-         mousex = d3.mouse(this);
-         mousex = mousex[0] + 5;
-         vertical.style("left", mousex + "px")});
-});
-}
-</script>
 
 {% end %}
