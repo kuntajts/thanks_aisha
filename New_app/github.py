@@ -11,12 +11,12 @@ class Github:
 
 
   races = {
-      "AIAN" : {},
-      "BAA" : {},
-      "NHOPI" : {},
-      "WHI" : {},
-      "HL" : {},
-      "NHL" : {}
+      "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "NHOPI" :{ "a": 0, "d": 0, "c":0, "ac":0},
+      "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
+      "NHL" : { "a": 0, "d": 0, "c":0, "ac":0},
   }
 
   userDict = None
@@ -42,7 +42,7 @@ class Github:
     r = requests.get(url)
     if(r.ok):
       repoItem = json.loads(r.text or r.content)
-      r.headers["X-RateLimit-Remaining"]
+      print r.headers["X-RateLimit-Remaining"]
       return repoItem
     r.headers["X-RateLimit-Remaining"]
 
@@ -85,6 +85,40 @@ class Github:
 
     return result
 
+  def StatsFromContributors(self,url):
+    repoName = url.split('/')[4]
+    userName = url.split('/')[3]
+    url = "repos/" + userName + "/" + repoName + "/stats/contributors"
+    url = self.buildurl(url)
+    contributor_stats = self.getJson(url)
+    ReturnStats = dict()
+    ReturnDates = []
+    for contributor in contributor_stats:
+
+      race = self.UsertoRace[contributor["author"]["login"]]
+      ethnicity = self.UsertoEthnicity[contributor["author"]["login"]]
+      for week in contributor["weeks"]:
+        if week["w"] not in ReturnStats:
+          ReturnDates.append(week["w"])
+          ReturnStats[week["w"]] = {
+                                    "AIAN" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "BAA" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "NHOPI" :{ "a": 0, "d": 0, "c":0, "ac":0},
+                                    "WHI" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "HL" : { "a": 0, "d": 0, "c":0, "ac":0},
+                                    "NHL" : { "a": 0, "d": 0, "c":0, "ac":0} }
+        ReturnStats[week["w"]][race]["a"] += week["a"]
+        ReturnStats[week["w"]][race]["d"] += week["d"]
+        ReturnStats[week["w"]][race]["c"] += week["c"]
+        ReturnStats[week["w"]][race]["ac"] += 1
+        ReturnStats[week["w"]][ethnicity]["a"] += week["a"]
+        ReturnStats[week["w"]][ethnicity]["d"] += week["d"]
+        ReturnStats[week["w"]][ethnicity]["c"] += week["c"]
+        ReturnStats[week["w"]][ethnicity]["ac"] += 1
+    return ReturnStats, ReturnDates
+
+
+
   def getAllCommitsInTheLastMonth(self, url):
     repoName = url.split('/')[4]
     userName = url.split('/')[3]
@@ -111,8 +145,8 @@ class Github:
           isMorePages = False
         if repoItem == None:
           print "WTF"
-        self.parseCommits(repoItem)
-        pageNum += 1
+      self.parseCommits(repoItem)
+      pageNum += 1
 
   def parseCommits(self, pageOfCommits):
     for commit in pageOfCommits:
@@ -127,12 +161,13 @@ class Github:
 
   def combineRaces(self, userInfo):
     userInfo = json.loads(userInfo)
-    self.userDict = dict()
+    self.UsertoRace = dict()
+    self.UsertoEthnicity = dict()
     for i in userInfo:
       userName = i["username"]
-      self.userDict[userName] = dict()
-      del i["username"]
-      self.userDict[userName] = i
+      self.UsertoRace[userName] = i["race"]
+      self.UsertoEthnicity[userName] = i["ethnicity"]
+
 
   def initializeRacesDict(self):
     for race in self.races:

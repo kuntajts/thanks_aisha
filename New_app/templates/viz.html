@@ -1,8 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Diversity in Code Projects{% end %}
+
+{% block body %}
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.blue-pink.min.css" />
 <script src="https://storage.googleapis.com/code.getmdl.io/1.0.0/material.min.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+<script>
+
+Alldata = JSON.parse('{% raw AlldataJson %}')
+AllDates = JSON.parse('{% raw AlldatesJson %}')
+
+</script>
 <style>
 body {
   font: 10px sans-serif;
@@ -166,7 +180,7 @@ var svg = d3.select("#multilinegraph").append("svg")
 
 d3.csv("data2.csv", function(error, data) {
   if (error) throw error;
-
+console.log(data)
   color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
 
   data.forEach(function(d) {
@@ -477,3 +491,5 @@ var graph = d3.csv(csvpath, function(data) {
 });
 }
 </script>
+
+{% end %}
